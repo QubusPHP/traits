@@ -4,6 +4,17 @@ namespace Qubus\Traits\Interfaces;
 interface UtilsTraitInterface
 {
     /**
+     * PHP each function.
+     *
+     * Return the current key and value pair from an array and advance the array cursor.
+     *
+     * @since 1.0.2
+     * @param array $arr The input array.
+     * @return mixed Returns the current key and value pair from the array array.
+     */
+    public function each(&$arr);
+
+    /**
      * Navigates through an array, object, or scalar, and removes slashes from the values.
      *
      * @since 1.0.1

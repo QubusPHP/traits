@@ -6,6 +6,23 @@ use Qubus\Hooks\ActionFilterHook;
 trait UtilsTrait
 {
     /**
+     * PHP each function.
+     *
+     * Return the current key and value pair from an array and advance the array cursor.
+     *
+     * @since 1.0.2
+     * @param array $arr The input array.
+     * @return mixed Returns the current key and value pair from the array array.
+     */
+    public function each(&$arr)
+    {
+        $key = key($arr);
+        $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+        next($arr);
+        return $result;
+    }
+
+    /**
      * Navigates through an array, object, or scalar, and removes slashes from the values.
      *
      * @since 1.0.0
