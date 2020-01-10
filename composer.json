@@ -16,7 +16,7 @@
     "require": {
         "php": "^7.3",
         "qubus/hooks": ">=1.0",
-        "qubus/exceptions": ">=1.0"
+        "qubus/exception": ">=1.0"
     },
     "autoload": {
         "psr-4": {
