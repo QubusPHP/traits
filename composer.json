@@ -1,0 +1,26 @@
+{
+    "name": "qubus/traits",
+    "description": "A library of traits that can be used in place of helper classes or god classes.",
+    "type": "library",
+    "keywords": ["traits", "multiple inheritance"],
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Joshua Parker",
+            "email": "josh@joshuaparker.blog"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/QubusCMS/Traits/issues"
+    },
+    "require": {
+        "php": "^7.3",
+        "qubus/hooks": ">=1.0",
+        "qubus/exceptions": ">=1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Qubus\\Traits\\": "src/"
+        }
+    }
+}
