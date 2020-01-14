@@ -44,7 +44,7 @@ trait SerializerTrait
         /**
          * Check data first to make sure it can be unserialized.
          */
-        if ($this->isSerialized($data)) {
+        if (self::isSerialized($data)) {
             return unserialize($data);
         }
 

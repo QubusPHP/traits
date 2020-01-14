@@ -41,7 +41,7 @@ trait EscapeTrait
     public function html($string)
     {
         $utf8_string = mb_convert_encoding($string, 'UTF-8', 'UTF-8');
-        $safe_string = $this->htmlSpecialChars($utf8_string, ENT_QUOTES);
+        $safe_string = self::htmlSpecialChars($utf8_string, ENT_QUOTES);
         return $safe_string;
     }
 
@@ -55,7 +55,7 @@ trait EscapeTrait
     public function textarea($string)
     {
         $utf8_string = mb_convert_encoding($string, 'UTF-8', 'UTF-8');
-        $safe_string = $this->htmlSpecialChars($utf8_string, ENT_QUOTES);
+        $safe_string = self::htmlSpecialChars($utf8_string, ENT_QUOTES);
         return $safe_string;
     }
 
@@ -140,7 +140,7 @@ trait EscapeTrait
     public function attr($string)
     {
         $utf8_string = mb_convert_encoding($string, 'UTF-8', 'UTF-8');
-        $safe_string = $this->htmlSpecialChars($utf8_string, ENT_QUOTES);
+        $safe_string = self::htmlSpecialChars($utf8_string, ENT_QUOTES);
         return $safe_string;
     }
 
@@ -159,7 +159,7 @@ trait EscapeTrait
      */
     public function js($string)
     {
-        $safe_string = $this->attr($string);
+        $safe_string = self::attr($string);
         return $safe_string;
     }
 }

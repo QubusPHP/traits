@@ -71,7 +71,7 @@ trait FileSystemTrait
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
                     if (is_dir($dir . DS . $object)) {
-                        $this->rmdir($dir . DS . $object);
+                        self::rmdir($dir . DS . $object);
                     } else {
                         unlink($dir . DS . $object);
                     }
@@ -199,11 +199,11 @@ trait FileSystemTrait
      */
     public function isDuplicateFunction(string $filename)
     {
-        if (!$this->exists($filename, false)) {
+        if (!self::exists($filename, false)) {
             return new Error('duplicate_function_error', sprintf('Invalid file name: %s.', $filename));
         }
 
-        $plugin = $this->getFunctions($filename);
+        $plugin = self::getFunctions($filename);
         $functions = get_defined_functions();
         $merge = array_merge($plugin, $functions['user']);
         if (count($merge) !== count(array_unique($merge))) {
@@ -230,7 +230,7 @@ trait FileSystemTrait
      */
     public function checkIncludes(string $filename)
     {
-        if (!$this->exists($filename, false)) {
+        if (!self::exists($filename, false)) {
             return sprintf('Invalid file name: %s.', $filename);
         }
 
@@ -242,7 +242,7 @@ trait FileSystemTrait
 
         // Split the contents of $fileName about requires and includes
         // We need to slice off the first element since that is the text up to the first include/require
-        $requireSplit = array_slice(preg_split('/require|include/i', $this->getContents($filename)), 1);
+        $requireSplit = array_slice(preg_split('/require|include/i', self::getContents($filename)), 1);
 
         // For each match
         foreach ($requireSplit as $string) {
@@ -293,7 +293,7 @@ trait FileSystemTrait
             throw new NotFoundException(sprintf('"%s" is not found or is not a regular file.', $filename), 404);
         }
 
-        $dupe_function = $this->isDuplicateFunction($filename);
+        $dupe_function = self::isDuplicateFunction($filename);
 
         if ($dupe_function instanceof Error) {
             throw new Exception($dupe_function->getErrorMessage(), 'php_check_syntax');
@@ -315,10 +315,10 @@ trait FileSystemTrait
 
         // If we are going to check the files includes
         if ($check_includes) {
-            foreach ($this->checkIncludes($file_name) as $include) {
+            foreach (self::checkIncludes($file_name) as $include) {
                 // Check the syntax for each include
                 if (is_file($include)) {
-                    $this->checkSyntax($include);
+                    self::checkSyntax($include);
                 }
             }
         }
@@ -342,12 +342,12 @@ trait FileSystemTrait
         // see http://bugs.php.net/bug.php?id=30931
 
         if ($path{strlen($path) - 1} == '/') { // recursively return a temporary file path
-            return $this->winIsWritable($path . uniqid(mt_rand()) . '.tmp');
+            return self::winIsWritable($path . uniqid(mt_rand()) . '.tmp');
         } elseif (is_dir($path)) {
-            return $this->winIsWritable($path . DS . uniqid(mt_rand()) . '.tmp');
+            return self::winIsWritable($path . DS . uniqid(mt_rand()) . '.tmp');
         }
         // check tmp file for read/write capabilities
-        $rm = $this->fileExists($path, false);
+        $rm = self::fileExists($path, false);
         $f = fopen($path, 'a');
         if ($f === false) {
             return false;
@@ -368,7 +368,7 @@ trait FileSystemTrait
     public function isWritable(string $path)
     {
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
-            return $this->winIsWritable($path);
+            return self::winIsWritable($path);
         } else {
             return is_writable($path);
         }
@@ -497,7 +497,7 @@ trait FileSystemTrait
         $filename = urldecode($filename);
         // optional beautification
         if ($beautify) {
-            $filename = $this->beautifyFilename($filename);
+            $filename = self::beautifyFilename($filename);
         }
 
         /**
@@ -562,6 +562,6 @@ trait FileSystemTrait
      */
     public function addTrailingSlash($string)
     {
-        return $this->removeTrailingSlash($string) . '/';
+        return self::removeTrailingSlash($string) . '/';
     }
 }
