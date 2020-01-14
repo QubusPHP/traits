@@ -57,7 +57,7 @@ trait HtmlPurifierTrait
             . 'video|xml|xss';
 
     /**
-     * Smilar to self::xss_naughty_html, but instead of looking for tags it
+     * Smilar to $this->xss_naughty_html, but instead of looking for tags it
      * looks for PHP and JavaScript commands that are disallowed.  Rather than
      * removing the code, it simply converts the parenthesis to entities
      * rendering the code un-executable.
@@ -252,7 +252,7 @@ trait HtmlPurifierTrait
          * Becomes: &lt;blink&gt;
          */
         $string = preg_replace_callback(
-            '#<(/*\s*)(self::xss_naughty_html)([^><]*)([><]*)#is',
+            '#<(/*\s*)( ' . $this->xss_naughty_html . ')([^><]*)([><]*)#is',
             'self::sanitizeNaughtyHtml',
             $string
         );
@@ -270,7 +270,7 @@ trait HtmlPurifierTrait
          * Becomes: eval&#40;'some code'&#41;
          */
         $string = preg_replace(
-            '#(self::xss_naughty_scripts)(\s*)\((.*?)\)#si',
+            '#(' . $this->xss_naughty_scripts . ')(\s*)\((.*?)\)#si',
             "\\1\\2&#40;\\3&#41;",
             $string
         );
@@ -382,7 +382,7 @@ trait HtmlPurifierTrait
     {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
         //$evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction');
-        $evil_attributes = self::xss_disalowed_attibutes;
+        $evil_attributes = $this->xss_disalowed_attibutes;
 
         if ($is_image === true) {
             /*
@@ -546,7 +546,7 @@ trait HtmlPurifierTrait
      */
     protected function decodeEntity($match)
     {
-        return self::entityDecode($match[0], strtoupper(self::mbencoding));
+        return self::entityDecode($match[0], strtoupper($this->mbencoding));
     }
 
     /**
@@ -589,9 +589,9 @@ trait HtmlPurifierTrait
      */
     protected function neverAllowed($string)
     {
-        $string = str_replace(array_keys(self::never_allowed_str), self::never_allowed_str, $string);
+        $string = str_replace(array_keys($this->never_allowed_str), $this->never_allowed_str, $string);
 
-        foreach (self::never_allowed_regex as $regex) {
+        foreach ($this->never_allowed_regex as $regex) {
             $string = preg_replace('#' . $regex . '#is', '[removed]', $string);
         }
 
