@@ -24,6 +24,16 @@ trait SingletonTrait
     }
 
     /**
+     * Reset the Container instance.
+     */
+    public static function resetInstance()
+    {
+        if (self::$instance) {
+            self::$instance = null;
+        }
+    }
+
+    /**
      * The constructor is disabled
      *
      * @throws \RuntimeException if called
@@ -44,13 +54,13 @@ trait SingletonTrait
     }
 
     /**
-     * Unserialization is disabled
+     * Wakeup is disabled
      *
      * @throws \RuntimeException if called
      */
     public function __wakeup()
     {
-        throw new \RuntimeException('You may not unserialize this object, because it is a singleton.');
+        throw new \RuntimeException('You may not wakeup this object, because it is a singleton.');
     }
 
     /**
