@@ -48,7 +48,7 @@ trait UtilsTrait
      */
     public function unslash($value)
     {
-        return $this->stripslashesDeep($value);
+        return self::stripslashesDeep($value);
     }
 
     /**
@@ -88,7 +88,7 @@ trait UtilsTrait
         $flat_array = [];
         foreach ($array as $element) {
             if (is_array($element)) {
-                $flat_array = array_merge($flat_array, $this->flattenArray($element));
+                $flat_array = array_merge($flat_array, self::flattenArray($element));
             } else {
                 $flat_array[] = $element;
             }
@@ -160,7 +160,7 @@ trait UtilsTrait
         } elseif (is_array($args)) {
             $r = $args;
         } else {
-            $this->parseStr($args, $r);
+            self::parseStr($args, $r);
         }
 
         if (is_array($defaults)) {
@@ -174,16 +174,16 @@ trait UtilsTrait
      * Properly strip all HTML tags including script and style (default).
      *
      * This differs from PHP's native strip_tags() function because this function removes the contents of
-     * the `<script>` and `<style>` tags. E.g. `strip_tags( '<script>something</script>' )`
-     * will return `'something'`. By default, $this->stripTags() will return `''`.
+     * the `<script>` and `<style>` tags. E.g. `self::stripTags( '<script>something</script>' )`
+     * will return `'something'`. By default, self::stripTags() will return `''`.
      *
      * Example Usage:
      *
      *      $string = '<b>sample</b> text with <div>tags</div>';
      *
-     *      $this->stripTags($string); //returns 'text with'
-     *      $this->stripTags($string, false, '<b>'); //returns '<b>sample</b> text with'
-     *      $this->stripTags($string, false, '<b>', true); //returns 'text with <div>tags</div>'
+     *      self::stripTags($string); //returns 'text with'
+     *      self::stripTags($string, false, '<b>'); //returns '<b>sample</b> text with'
+     *      self::stripTags($string, false, '<b>', true); //returns 'text with <div>tags</div>'
      *
      * @since 1.0.0
      * @param string $string        String containing HTML tags
@@ -199,7 +199,7 @@ trait UtilsTrait
 
         $_string = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $string);
 
-        preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', $this->trim($tags), $tags);
+        preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', self::trim($tags), $tags);
         $_tags = array_unique($tags[1]);
 
         if (is_array($_tags) && count($_tags) > 0) {

@@ -8,7 +8,7 @@ namespace Qubus\Traits;
 trait HtmlPurifierTrait
 {
     use UtilsTrait;
-  
+
     protected $never_allowed_str = [
         'document.cookie' => '[removed]',
         'document.write' => '[removed]',
@@ -57,7 +57,7 @@ trait HtmlPurifierTrait
             . 'video|xml|xss';
 
     /**
-     * Smilar to $this->xss_naughty_html, but instead of looking for tags it
+     * Smilar to self::xss_naughty_html, but instead of looking for tags it
      * looks for PHP and JavaScript commands that are disallowed.  Rather than
      * removing the code, it simply converts the parenthesis to entities
      * rendering the code un-executable.
@@ -97,7 +97,7 @@ trait HtmlPurifierTrait
          */
         if (is_array($string)) {
             while (list($key) = $this->each($string)) {
-                $string[$key] = $this->purify($string[$key]);
+                $string[$key] = self::purify($string[$key]);
             }
 
             return $string;
@@ -106,10 +106,10 @@ trait HtmlPurifierTrait
         /*
          * Remove Invisible Characters
          */
-        $string = $this->removeInvisibleCharacters($string);
+        $string = self::removeInvisibleCharacters($string);
 
         // Validate Entities in URLs
-        $string = $this->validateEntities($string);
+        $string = self::validateEntities($string);
 
         /*
          * URL Decode
@@ -125,7 +125,7 @@ trait HtmlPurifierTrait
             do {
                 $oldstr = $string;
                 $string = rawurldecode($string);
-                $string = preg_replace_callback('#%(?:\s*[0-9a-f]){2,}#i', [$this, 'urlDecodeSpaces'], $string);
+                $string = preg_replace_callback('#%(?:\s*[0-9a-f]){2,}#i', 'self::urlDecodeSpaces', $string);
             } while ($oldstr !== $string);
             unset($oldstr);
         }
@@ -139,14 +139,14 @@ trait HtmlPurifierTrait
          *
          */
 
-        $string = preg_replace_callback("/[a-z]+=([\'\"]).*?\\1/si", [$this, 'convertAttribute'], $string);
+        $string = preg_replace_callback("/[a-z]+=([\'\"]).*?\\1/si", 'self::convertAttribute', $string);
 
-        $string = preg_replace_callback("/<\w+.*?(?=>|<|$)/si", [$this, 'decodeEntity'], $string);
+        $string = preg_replace_callback("/<\w+.*?(?=>|<|$)/si", 'self::decodeEntity', $string);
 
         /*
          * Remove Invisible Characters Again!
          */
-        $string = $this->removeInvisibleCharacters($string);
+        $string = self::removeInvisibleCharacters($string);
 
         /*
          * Convert all tabs to spaces
@@ -167,7 +167,7 @@ trait HtmlPurifierTrait
         $converted_string = $string;
 
         // Remove Strings that are never allowed
-        $string = $this->neverAllowed($string);
+        $string = self::neverAllowed($string);
 
         /*
          * Makes PHP tags safe
@@ -210,7 +210,7 @@ trait HtmlPurifierTrait
             // That way valid stuff like "dealer to" does not become "dealerto"
             $string = preg_replace_callback(
                 '#(' . substr($temp, 0, -3) . ')(\W)#is',
-                [$this, 'compactExplodedWords'],
+                'self::compactExplodedWords',
                 $string
             );
         }
@@ -225,11 +225,11 @@ trait HtmlPurifierTrait
             $original = $string;
 
             if (preg_match("/<a/i", $string)) {
-                $string = preg_replace_callback("#<a\s+([^>]*?)(>|$)#si", [$this, 'jsLinkRemoval'], $string);
+                $string = preg_replace_callback("#<a\s+([^>]*?)(>|$)#si", 'self::jsLinkRemoval', $string);
             }
 
             if (preg_match("/<img/i", $string)) {
-                $string = preg_replace_callback("#<img\s+([^>]*?)(\s?/?>|$)#si", [$this, 'jsImgRemoval'], $string);
+                $string = preg_replace_callback("#<img\s+([^>]*?)(\s?/?>|$)#si", 'self::jsImgRemoval', $string);
             }
 
             if (preg_match("/script/i", $string) or preg_match("/xss/i", $string)) {
@@ -240,7 +240,7 @@ trait HtmlPurifierTrait
         unset($original);
 
         // Remove evil attributes such as style, onclick and xmlns
-        $string = $this->removeEvilAttributes($string, $is_image);
+        $string = self::removeEvilAttributes($string, $is_image);
 
         /*
          * Sanitize naughty HTML elements
@@ -252,8 +252,8 @@ trait HtmlPurifierTrait
          * Becomes: &lt;blink&gt;
          */
         $string = preg_replace_callback(
-            '#<(/*\s*)(' . $this->xss_naughty_html . ')([^><]*)([><]*)#is',
-            [$this, 'sanitizeNaughtyHtml'],
+            '#<(/*\s*)(self::xss_naughty_html)([^><]*)([><]*)#is',
+            'self::sanitizeNaughtyHtml',
             $string
         );
 
@@ -270,7 +270,7 @@ trait HtmlPurifierTrait
          * Becomes: eval&#40;'some code'&#41;
          */
         $string = preg_replace(
-            '#(' . $this->xss_naughty_scripts . ')(\s*)\((.*?)\)#si',
+            '#(self::xss_naughty_scripts)(\s*)\((.*?)\)#si',
             "\\1\\2&#40;\\3&#41;",
             $string
         );
@@ -279,7 +279,7 @@ trait HtmlPurifierTrait
         // Final clean up
         // This adds a bit of extra precaution in case
         // something got through the above filters
-        $string = $this->neverAllowed($string);
+        $string = self::neverAllowed($string);
 
         /*
          * Images are Handled in a Special Way
@@ -351,7 +351,7 @@ trait HtmlPurifierTrait
     /**
      * Compact Exploded Words
      *
-     * Callback function for $this->purify() to remove whitespace from
+     * Callback function for self::purify() to remove whitespace from
      * things like j a v a s c r i p t
      *
      * @param type
@@ -382,7 +382,7 @@ trait HtmlPurifierTrait
     {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
         //$evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction');
-        $evil_attributes = $this->xss_disalowed_attibutes;
+        $evil_attributes = self::xss_disalowed_attibutes;
 
         if ($is_image === true) {
             /*
@@ -438,7 +438,7 @@ trait HtmlPurifierTrait
     /**
      * Sanitize Naughty HTML
      *
-     * Callback function for $this->purify() to remove naughty HTML elements.
+     * Callback function for self::purify() to remove naughty HTML elements.
      *
      * @param array
      * @return string
@@ -457,7 +457,7 @@ trait HtmlPurifierTrait
     /**
      * JS Link Removal
      *
-     * Callback function for $this->purify() to sanitize links
+     * Callback function for self::purify() to sanitize links
      * This limits the PCRE backtracks, making it more performance friendly
      * and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
      * PHP 5.2+ on link-heavy strings.
@@ -472,7 +472,7 @@ trait HtmlPurifierTrait
             preg_replace(
                 '#href=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|data\s*:)#si',
                 '',
-                $this->filterAttributes(str_replace(['<', '>'], '', $match[1]))
+                self::filterAttributes(str_replace(['<', '>'], '', $match[1]))
             ),
             $match[0]
         );
@@ -481,7 +481,7 @@ trait HtmlPurifierTrait
     /**
      * JS Image Removal
      *
-     * Callback function for $this->purify() to sanitize image tags
+     * Callback function for self::purify() to sanitize image tags
      * This limits the PCRE backtracks, making it more performance friendly
      * and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
      * PHP 5.2+ on image tag heavy strings.
@@ -496,7 +496,7 @@ trait HtmlPurifierTrait
             preg_replace(
                 '#src=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|base64\s*,)#si',
                 '',
-                $this->filterAttributes(str_replace(['<', '>'], '', $match[1]))
+                self::filterAttributes(str_replace(['<', '>'], '', $match[1]))
             ),
             $match[0]
         );
@@ -546,13 +546,13 @@ trait HtmlPurifierTrait
      */
     protected function decodeEntity($match)
     {
-        return $this->entityDecode($match[0], strtoupper($this->mbencoding));
+        return self::entityDecode($match[0], strtoupper(self::mbencoding));
     }
 
     /**
      * Validate URL entities
      *
-     * Called by $this->purify().
+     * Called by self::purify().
      *
      * @param string
      * @return string
@@ -582,16 +582,16 @@ trait HtmlPurifierTrait
     /**
      * Never Allowed
      *
-     * A utility function for $this->purify().
+     * A utility function for self::purify().
      *
      * @param string
      * @return string
      */
     protected function neverAllowed($string)
     {
-        $string = str_replace(array_keys($this->never_allowed_str), $this->never_allowed_str, $string);
+        $string = str_replace(array_keys(self::never_allowed_str), self::never_allowed_str, $string);
 
-        foreach ($this->never_allowed_regex as $regex) {
+        foreach (self::never_allowed_regex as $regex) {
             $string = preg_replace('#' . $regex . '#is', '[removed]', $string);
         }
 

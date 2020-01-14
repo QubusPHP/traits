@@ -87,7 +87,7 @@ trait UriTrait
     {
         $relative_path = ActionFilterHook::getInstance()->applyFilter('qubus_is_admin', '/admin');
 
-        if (strpos($this->getPathInfo($relative_path), $relative_path) === 0) {
+        if (strpos(self::getPathInfo($relative_path), $relative_path) === 0) {
             return true;
         }
         return false;
@@ -105,7 +105,7 @@ trait UriTrait
     {
         $relative_path = ActionFilterHook::getInstance()->applyFilter('qubus_is_login', '/login');
 
-        if (strpos($this->getPathInfo($relative_path), $relative_path) === 0) {
+        if (strpos(self::getPathInfo($relative_path), $relative_path) === 0) {
             return true;
         }
         return false;

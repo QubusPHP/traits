@@ -13,7 +13,7 @@ trait ConverterTrait
     {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $array[$key] = $this->toObject($value);
+                $array[$key] = self::toObject($value);
             }
         }
         return (object) $array;
