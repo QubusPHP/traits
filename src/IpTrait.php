@@ -3,6 +3,7 @@ namespace Qubus\Traits;
 
 trait IpTrait
 {
+    use SingletonTrait;
     public function retrieve()
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {

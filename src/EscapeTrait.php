@@ -3,6 +3,7 @@ namespace Qubus\Traits;
 
 trait EscapeTrait
 {
+    use SingletonTrait;
     /**
      * Convert special characters to HTML entities
      *

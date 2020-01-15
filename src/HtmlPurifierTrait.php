@@ -7,6 +7,7 @@ namespace Qubus\Traits;
 
 trait HtmlPurifierTrait
 {
+    use SingletonTrait;
     use UtilsTrait;
 
     protected $never_allowed_str = [

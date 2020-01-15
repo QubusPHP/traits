@@ -5,6 +5,7 @@ use Qubus\Hooks\ActionFilterHook;
 
 trait UriTrait
 {
+    use SingletonTrait;
     /**
      * Redirects to another page.
      *

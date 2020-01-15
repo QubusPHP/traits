@@ -5,6 +5,7 @@ use Qubus\Hooks\ActionFilterHook;
 
 trait UtilsTrait
 {
+    use SingletonTrait;
     /**
      * PHP each function.
      *

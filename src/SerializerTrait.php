@@ -8,7 +8,7 @@ use Qubus\Exception\Data\TypeException;
  */
 trait SerializerTrait
 {
-
+    use SingletonTrait;
     /**
      * Serializes data if necessary.
      *
