@@ -3,6 +3,7 @@ namespace Qubus\Traits;
 
 trait SslTrait
 {
+    use SingletonTrait;
     /**
      * Determines if SSL is used.
      *

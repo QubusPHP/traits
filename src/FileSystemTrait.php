@@ -9,6 +9,7 @@ use Qubus\Exception\Exception;
 
 trait FileSystemTrait
 {
+    use SingletonTrait;
     /**
      * Custom make directory function.
      *
